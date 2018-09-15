@@ -1,0 +1,20 @@
+﻿<Page
+    x:Class="TurnOnLight.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TurnOnLight"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="WhiteSmoke">
+
+    <Grid Background="WhiteSmoke">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock x:Name="SolutionName" Text="TurnOnTheLights with Azure Cognitive Services (LUIS) and Windows 10 IoT Core" FontSize="16" Margin="0,0,0,0" Height="50" SelectionChanged="SolutionName_SelectionChanged" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black"/>
+            <TextBox x:Name="CommandTextBox" />
+            <Button x:Name="GO" Content="SEND MESSAGE" Click="GO_Click" FontSize="16" Foreground="White" FocusVisualSecondaryBrush="#99FFFFFF" FocusVisualPrimaryBrush="Black" Background="#FF511C74" />
+            <Image x:Name="dotnetconf2018" HorizontalAlignment="Center" Height="231" Margin="0,100,0,0" VerticalAlignment="Bottom" Width="450" Source="Assets\dotnetconf2018.png"/>
+
+        </StackPanel>
+    </Grid>
+</Page>
