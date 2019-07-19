@@ -1,4 +1,4 @@
-﻿namespace TurnOnLight.Analyzer
+﻿namespace TurnOnLight
 {
     public class Analyzer
     {

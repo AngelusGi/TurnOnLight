@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Windows.Devices.Gpio;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
-using TurnOnLight.Analyzer;
-using Windows.Devices.Gpio;
 
 
 
@@ -18,44 +16,44 @@ namespace TurnOnLight
     public sealed partial class MainPage : Page
     {
 
-        private const int LED_GREEN_PIN = 2;
-        private const int LED_YELLOW_PIN = 3;
-        private GpioPin pinGreen;
-        private GpioPin pinYellow;
+        private const int LedGreenPin = 2;
+        private const int LedYellowPin = 3;
+        private GpioPin _pinGreen;
+        private GpioPin _pinYellow;
 
         public MainPage()
         {
-            this.InitializeComponent();
-            InitGPIO();
+            InitializeComponent();
+            InitGpio();
         }
 
-        private void InitGPIO()
+        private void InitGpio()
         {
-            var gpio = GpioController.GetDefault();
+            GpioController gpio = GpioController.GetDefault();
 
-            pinGreen = gpio.OpenPin(LED_GREEN_PIN);
-            pinYellow = gpio.OpenPin(LED_YELLOW_PIN);
-            pinGreen.SetDriveMode(GpioPinDriveMode.Output);
-            pinYellow.SetDriveMode(GpioPinDriveMode.Output);
+            _pinGreen = gpio.OpenPin(LedGreenPin);
+            _pinYellow = gpio.OpenPin(LedYellowPin);
+            _pinGreen.SetDriveMode(GpioPinDriveMode.Output);
+            _pinYellow.SetDriveMode(GpioPinDriveMode.Output);
         }
 
-        private GpioPin[] SelectedPin(Entity entity)
+        private IEnumerable<GpioPin> SelectedPin(Entity entity)
         {
-            var result = new List<GpioPin>();
+            List<GpioPin> result = new List<GpioPin>();
             switch (entity)
             {
                 case Entity.Green:
-                    LightAccess(result, entity, pinGreen);
+                    LightAccess(result, entity, _pinGreen);
                     break;
                 case Entity.Yellow:
-                    LightAccess(result, entity, pinYellow);
+                    LightAccess(result, entity, _pinYellow);
                     break;
                 case Entity.AllLights:
-                    LightAccess(result, Entity.Green, pinGreen);
-                    LightAccess(result, Entity.Yellow, pinYellow);
+                    LightAccess(result, Entity.Green, _pinGreen);
+                    LightAccess(result, Entity.Yellow, _pinYellow);
                     break;
                 default:
-                    break;
+                    throw new ArgumentOutOfRangeException(nameof(entity), entity, null);
             }
 
             return result.ToArray();
@@ -68,11 +66,11 @@ namespace TurnOnLight
 
         private async void GO_Click(object sender, RoutedEventArgs e)
         {
-           
-            var result = await WebClientLuis.Order(CommandTextBox.Text);
 
-            var pins = SelectedPin(result.Entity);
-            foreach (var pin in pins)
+            Analyzer result = await WebClientLuis.Order(CommandTextBox.Text);
+
+            IEnumerable<GpioPin> pins = SelectedPin(result.Entity);
+            foreach (GpioPin pin in pins)
             {
                 switch (result.Intent)
                 {
@@ -83,7 +81,6 @@ namespace TurnOnLight
                         pin.Write(GpioPinValue.High);
                         break;
                     case Intent.None:
-                    default:
                         break;
                 }
             }
